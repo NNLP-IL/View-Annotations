@@ -4,6 +4,13 @@
       <h2>
         Check Annotation
         <b-link href="/">(All Annotations)</b-link>
+        <b-button
+                  :variant="'primary'"
+                  v-download-data="valid_json"
+                  v-download-data:type="'json'"
+                  v-download-data:filename="this.key"
+              >Download
+              </b-button>
       </h2>
       <b-jumbotron>
         <h2>{{ this.filename}}</h2>
@@ -50,6 +57,16 @@ export default {
       }
     })
   },
+  computed: {
+    valid_json: function () {
+      let json = JSON.stringify(this.board).replace(/[\u007F-\uFFFF]/g, function (
+          chr
+      ) {
+        return "\\u" + ("0000" + chr.charCodeAt(0).toString(16)).substr(-4);
+      });
+      return json;
+    }
+},
   methods: {
     editBoard(id) {
       router.push({
@@ -84,6 +101,7 @@ export default {
           question: paragraph.qas[i].question,
           answer: paragraph.qas[i].answers[0].text,
           withAnswer: paragraph.qas[i].answers[0].withAnswer,
+          answersStartIndex: paragraph.qas[i].answers[0].answer_start,
           _rowVariant: color
         };
         items.push(item);

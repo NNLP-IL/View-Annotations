@@ -33,4 +33,4 @@ export default new VueRouter({
       component: loadView("edit-board")
     }
   ]
-});
+})

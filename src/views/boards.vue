@@ -23,8 +23,10 @@ export default {
   data() {
     return {
       fields: {
-        title: { label: "Title", sortable: true, "class": "text-left" },
-        actions: { label: "Action", "class": "text-center" }
+        title: { label: "Title", "class": "text-left" },
+        withAnswer:{label:"With Answer", "class": "text-center" }, 
+        noAnswer:{label:"No Answer", "class": "text-center" },
+        actions: { label: "Action", "class": "text-right" }
       },
       boards: [],
       errors: [],
@@ -35,17 +37,39 @@ export default {
     this.ref.onSnapshot((querySnapshot) => {
       this.boards = [];
       querySnapshot.forEach((doc) => {
+        let answers = this.parsedoc(doc.data());
         // console.log(doc);
         this.boards.push({
           key: doc.id,
-          title:doc.id //doc.prolificID+" "+ doc.filename
-        })
-      })
-    })
+          withAnswer: answers[0],
+          noAnswer: answers[1],
+          title: doc.id //doc.prolificID+" "+ doc.filename
+        });
+      });
+    });
   },
   methods: {
     details(board) {
       router.push({ name: "show-board", params: { id: board.key }})
+    },
+    parsedoc(data){
+      this.filename = data.filename;
+      // console.log(this.filename);
+      let paragraph = JSON.parse(data.json_data).data[0].paragraphs[0];
+      this.paragraph = paragraph.context;
+      this.prolificID = data.prolificID;
+      let withAnswer = 0;
+      let noAnswer = 0;
+      for (var i = 0; i < paragraph.qas.length; i++) {
+        if(paragraph.qas[i].answers[0].withAnswer== true || paragraph.qas[i].answers[0].withAnswer== "true")
+          withAnswer = withAnswer + 1;
+        else
+          noAnswer = noAnswer +1;
+      }
+      let ret = [];
+      ret.push(withAnswer);
+      ret.push(noAnswer);
+      return ret;
     }
   }
 }
