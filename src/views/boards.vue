@@ -34,6 +34,7 @@ export default {
     }
   },
   created() {
+    firebase.auth;
     this.ref.onSnapshot((querySnapshot) => {
       this.boards = [];
       querySnapshot.forEach((doc) => {
