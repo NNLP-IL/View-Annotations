@@ -7,7 +7,7 @@ function loadView(view) {
   return () =>
     import(/* webpackChunkName: "[request]" */ `./views/${view}.vue`);
 }
-
+// let showBoards = "protected"
 export default new VueRouter({
   mode: "history",
   base: process.env.BASE_URL,
@@ -15,8 +15,13 @@ export default new VueRouter({
     {
       path: "/",
       name: "boards",
-      component: loadView("boards")
+      component: loadView("boards"),
     },
+    // {
+    //   path: "/",
+    //   name: "boards",
+    //   component: loadView("boards"),
+    // },
     {
       path: "/show-board/:id",
       name: "show-board",
